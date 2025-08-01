@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポモドーロタイマー</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 50%, #1e5f99 100%);
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .koi-pond {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .koi {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            opacity: 0.8;
+            transition: transform 0.3s ease;
+        }
+        
+        .koi svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .koi1 {
+            top: 15%;
+            animation: swim1 25s infinite ease-in-out;
+        }
+        
+        .koi2 {
+            top: 55%;
+            animation: swim2 30s infinite ease-in-out;
+            animation-delay: -8s;
+        }
+        
+        .koi3 {
+            top: 35%;
+            animation: swim3 35s infinite ease-in-out;
+            animation-delay: -15s;
+        }
+        
+        .koi4 {
+            top: 75%;
+            animation: swim4 28s infinite ease-in-out;
+            animation-delay: -20s;
+        }
+        
+        .koi5 {
+            top: 25%;
+            animation: swim5 32s infinite ease-in-out;
+            animation-delay: -12s;
+        }
+        
+        @keyframes swim1 {
+            0% { left: -150px; transform: translateY(0px) scaleX(1) rotate(0deg); }
+            10% { transform: translateY(-40px) scaleX(1) rotate(-8deg); }
+            20% { transform: translateY(-60px) scaleX(1) rotate(-15deg); }
+            30% { transform: translateY(-40px) scaleX(1) rotate(-8deg); }
+            40% { transform: translateY(20px) scaleX(1) rotate(12deg); }
+            50% { transform: translateY(50px) scaleX(1) rotate(20deg); }
+            60% { transform: translateY(30px) scaleX(1) rotate(12deg); }
+            70% { transform: translateY(-20px) scaleX(1) rotate(-10deg); }
+            80% { transform: translateY(-45px) scaleX(1) rotate(-18deg); }
+            90% { transform: translateY(-20px) scaleX(1) rotate(-5deg); }
+            100% { left: 100vw; transform: translateY(0px) scaleX(1) rotate(0deg); }
+        }
+        
+        @keyframes swim2 {
+            0% { right: -150px; transform: translateY(0px) scaleX(-1) rotate(0deg); }
+            12% { transform: translateY(35px) scaleX(-1) rotate(15deg); }
+            25% { transform: translateY(60px) scaleX(-1) rotate(25deg); }
+            35% { transform: translateY(45px) scaleX(-1) rotate(18deg); }
+            50% { transform: translateY(-30px) scaleX(-1) rotate(-20deg); }
+            65% { transform: translateY(-55px) scaleX(-1) rotate(-28deg); }
+            75% { transform: translateY(-25px) scaleX(-1) rotate(-12deg); }
+            85% { transform: translateY(15px) scaleX(-1) rotate(8deg); }
+            95% { transform: translateY(25px) scaleX(-1) rotate(12deg); }
+            100% { right: 100vw; transform: translateY(0px) scaleX(-1) rotate(0deg); }
+        }
+        
+        @keyframes swim3 {
+            0% { left: -150px; transform: translateY(0px) scaleX(1) rotate(0deg); }
+            8% { transform: translateY(-50px) scaleX(1) rotate(-22deg); }
+            18% { transform: translateY(-80px) scaleX(1) rotate(-35deg); }
+            28% { transform: translateY(-60px) scaleX(1) rotate(-25deg); }
+            40% { transform: translateY(30px) scaleX(1) rotate(18deg); }
+            52% { transform: translateY(70px) scaleX(1) rotate(32deg); }
+            64% { transform: translateY(45px) scaleX(-1) rotate(20deg); }
+            76% { transform: translateY(-25px) scaleX(1) rotate(-15deg); }
+            88% { transform: translateY(-65px) scaleX(1) rotate(-30deg); }
+            100% { left: 100vw; transform: translateY(0px) scaleX(1) rotate(0deg); }
+        }
+        
+        @keyframes swim4 {
+            0% { right: -150px; transform: translateY(0px) scaleX(-1) rotate(0deg); }
+            15% { transform: translateY(-45px) scaleX(-1) rotate(-25deg); }
+            30% { transform: translateY(-70px) scaleX(-1) rotate(-38deg); }
+            45% { transform: translateY(-35px) scaleX(-1) rotate(-18deg); }
+            60% { transform: translateY(40px) scaleX(-1) rotate(22deg); }
+            75% { transform: translateY(65px) scaleX(-1) rotate(35deg); }
+            90% { transform: translateY(30px) scaleX(-1) rotate(15deg); }
+            100% { right: 100vw; transform: translateY(0px) scaleX(-1) rotate(0deg); }
+        }
+        
+        @keyframes swim5 {
+            0% { left: -150px; transform: translateY(0px) scaleX(1) rotate(0deg); }
+            14% { transform: translateY(55px) scaleX(1) rotate(28deg); }
+            28% { transform: translateY(85px) scaleX(1) rotate(42deg); }
+            42% { transform: translateY(40px) scaleX(1) rotate(22deg); }
+            56% { transform: translateY(-50px) scaleX(1) rotate(-30deg); }
+            70% { transform: translateY(-85px) scaleX(1) rotate(-45deg); }
+            84% { transform: translateY(-40px) scaleX(1) rotate(-20deg); }
+            100% { left: 100vw; transform: translateY(0px) scaleX(1) rotate(0deg); }
+        }
+        
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: bubble-rise 4s infinite linear;
+        }
+        
+        @keyframes bubble-rise {
+            0% {
+                bottom: -20px;
+                opacity: 0.7;
+                transform: translateX(0px);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translateX(20px);
+            }
+            100% {
+                bottom: 100vh;
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .session-info {
+            font-size: 1.2em;
+            margin: 20px 0;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            margin: 30px 0;
+        }
+        
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .settings {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .setting-group label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .setting-group input {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            text-align: center;
+            width: 60px;
+            font-size: 1em;
+        }
+        
+        .setting-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .progress-ring {
+            position: relative;
+            margin: 20px auto;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .progress-ring-circle {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 4;
+            fill: transparent;
+            r: 90;
+            cx: 100;
+            cy: 100;
+        }
+        
+        .progress-ring-progress {
+            stroke: #fff;
+            stroke-width: 4;
+            stroke-linecap: round;
+            fill: transparent;
+            r: 90;
+            cx: 100;
+            cy: 100;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-dasharray: 565.48;
+            stroke-dashoffset: 565.48;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        .timer-display-in-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="koi-pond">
+        <div class="koi koi1">
+            <svg viewBox="0 0 60 30">
+                <path d="M5 15 Q15 5, 35 10 Q45 12, 55 15 Q45 18, 35 20 Q15 25, 5 15" fill="#FF6B6B" stroke="#FF5252" stroke-width="1"/>
+                <path d="M10 15 Q20 8, 30 12 Q35 13, 40 15 Q35 17, 30 18 Q20 22, 10 15" fill="#FF8A80"/>
+                <circle cx="45" cy="15" r="2" fill="#000"/>
+                <path d="M8 12 Q5 8, 2 10 Q5 15, 8 12" fill="#FF5252"/>
+                <path d="M8 18 Q5 22, 2 20 Q5 15, 8 18" fill="#FF5252"/>
+            </svg>
+        </div>
+        <div class="koi koi2">
+            <svg viewBox="0 0 60 30">
+                <path d="M5 15 Q15 5, 35 10 Q45 12, 55 15 Q45 18, 35 20 Q15 25, 5 15" fill="#4CAF50" stroke="#388E3C" stroke-width="1"/>
+                <path d="M10 15 Q20 8, 30 12 Q35 13, 40 15 Q35 17, 30 18 Q20 22, 10 15" fill="#81C784"/>
+                <circle cx="45" cy="15" r="2" fill="#000"/>
+                <path d="M8 12 Q5 8, 2 10 Q5 15, 8 12" fill="#388E3C"/>
+                <path d="M8 18 Q5 22, 2 20 Q5 15, 8 18" fill="#388E3C"/>
+            </svg>
+        </div>
+        <div class="koi koi3">
+            <svg viewBox="0 0 60 30">
+                <path d="M5 15 Q15 5, 35 10 Q45 12, 55 15 Q45 18, 35 20 Q15 25, 5 15" fill="#FF9800" stroke="#F57C00" stroke-width="1"/>
+                <path d="M10 15 Q20 8, 30 12 Q35 13, 40 15 Q35 17, 30 18 Q20 22, 10 15" fill="#FFB74D"/>
+                <circle cx="45" cy="15" r="2" fill="#000"/>
+                <path d="M8 12 Q5 8, 2 10 Q5 15, 8 12" fill="#F57C00"/>
+                <path d="M8 18 Q5 22, 2 20 Q5 15, 8 18" fill="#F57C00"/>
+            </svg>
+        </div>
+        <div class="koi koi4">
+            <svg viewBox="0 0 60 30">
+                <path d="M5 15 Q15 5, 35 10 Q45 12, 55 15 Q45 18, 35 20 Q15 25, 5 15" fill="#9C27B0" stroke="#7B1FA2" stroke-width="1"/>
+                <path d="M10 15 Q20 8, 30 12 Q35 13, 40 15 Q35 17, 30 18 Q20 22, 10 15" fill="#BA68C8"/>
+                <circle cx="45" cy="15" r="2" fill="#000"/>
+                <path d="M8 12 Q5 8, 2 10 Q5 15, 8 12" fill="#7B1FA2"/>
+                <path d="M8 18 Q5 22, 2 20 Q5 15, 8 18" fill="#7B1FA2"/>
+            </svg>
+        </div>
+        <div class="koi koi5">
+            <svg viewBox="0 0 60 30">
+                <path d="M5 15 Q15 5, 35 10 Q45 12, 55 15 Q45 18, 35 20 Q15 25, 5 15" fill="#FFC107" stroke="#FFA000" stroke-width="1"/>
+                <path d="M10 15 Q20 8, 30 12 Q35 13, 40 15 Q35 17, 30 18 Q20 22, 10 15" fill="#FFD54F"/>
+                <circle cx="45" cy="15" r="2" fill="#000"/>
+                <path d="M8 12 Q5 8, 2 10 Q5 15, 8 12" fill="#FFA000"/>
+                <path d="M8 18 Q5 22, 2 20 Q5 15, 8 18" fill="#FFA000"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1>🍅 ポモドーロタイマー</h1>
+        
+        <div class="session-info">
+            <div id="sessionType">作業セッション</div>
+            <div>セッション: <span id="sessionCount">1</span></div>
+        </div>
+        
+        <div class="progress-ring">
+            <svg class="progress-ring" width="200" height="200">
+                <circle class="progress-ring-circle"></circle>
+                <circle class="progress-ring-progress" id="progressCircle"></circle>
+            </svg>
+            <div class="timer-display-in-circle" id="timerDisplay">25:00</div>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn">開始</button>
+            <button id="pauseBtn" disabled>一時停止</button>
+            <button id="resetBtn">リセット</button>
+        </div>
+        
+        <div class="settings">
+            <div class="setting-group">
+                <label>作業時間 (分)</label>
+                <input type="number" id="workTime" value="25" min="1" max="60">
+            </div>
+            <div class="setting-group">
+                <label>短い休憩 (分)</label>
+                <input type="number" id="shortBreak" value="5" min="1" max="30">
+            </div>
+            <div class="setting-group">
+                <label>長い休憩 (分)</label>
+                <input type="number" id="longBreak" value="15" min="1" max="60">
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        class PomodoroTimer {
+            constructor() {
+                this.workTime = 25;
+                this.shortBreakTime = 5;
+                this.longBreakTime = 15;
+                this.currentTime = this.workTime * 60;
+                this.totalTime = this.workTime * 60;
+                this.isRunning = false;
+                this.isWorkSession = true;
+                this.sessionCount = 1;
+                this.timer = null;
+                
+                this.initializeElements();
+                this.bindEvents();
+                this.updateDisplay();
+            }
+            
+            initializeElements() {
+                this.timerDisplay = document.getElementById('timerDisplay');
+                this.sessionType = document.getElementById('sessionType');
+                this.sessionCountEl = document.getElementById('sessionCount');
+                this.startBtn = document.getElementById('startBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.workTimeInput = document.getElementById('workTime');
+                this.shortBreakInput = document.getElementById('shortBreak');
+                this.longBreakInput = document.getElementById('longBreak');
+                this.progressCircle = document.getElementById('progressCircle');
+            }
+            
+            bindEvents() {
+                this.startBtn.addEventListener('click', () => this.start());
+                this.pauseBtn.addEventListener('click', () => this.pause());
+                this.resetBtn.addEventListener('click', () => this.reset());
+                
+                this.workTimeInput.addEventListener('change', () => {
+                    this.workTime = parseInt(this.workTimeInput.value);
+                    if (this.isWorkSession && !this.isRunning) {
+                        this.currentTime = this.workTime * 60;
+                        this.totalTime = this.workTime * 60;
+                        this.updateDisplay();
+                    }
+                });
+                
+                this.shortBreakInput.addEventListener('change', () => {
+                    this.shortBreakTime = parseInt(this.shortBreakInput.value);
+                });
+                
+                this.longBreakInput.addEventListener('change', () => {
+                    this.longBreakTime = parseInt(this.longBreakInput.value);
+                });
+            }
+            
+            start() {
+                this.isRunning = true;
+                this.startBtn.disabled = true;
+                this.pauseBtn.disabled = false;
+                
+                this.timer = setInterval(() => {
+                    this.currentTime--;
+                    this.updateDisplay();
+                    
+                    if (this.currentTime <= 0) {
+                        this.handleSessionComplete();
+                    }
+                }, 1000);
+            }
+            
+            pause() {
+                this.isRunning = false;
+                this.startBtn.disabled = false;
+                this.pauseBtn.disabled = true;
+                clearInterval(this.timer);
+            }
+            
+            reset() {
+                this.pause();
+                this.isWorkSession = true;
+                this.sessionCount = 1;
+                this.currentTime = this.workTime * 60;
+                this.totalTime = this.workTime * 60;
+                this.updateDisplay();
+                this.updateSessionInfo();
+            }
+            
+            handleSessionComplete() {
+                this.pause();
+                this.playNotificationSound();
+                
+                if (this.isWorkSession) {
+                    if (this.sessionCount % 4 === 0) {
+                        this.startBreakSession(this.longBreakTime, '長い休憩');
+                    } else {
+                        this.startBreakSession(this.shortBreakTime, '短い休憩');
+                    }
+                    this.sessionCount++;
+                } else {
+                    this.startWorkSession();
+                }
+                
+                this.updateSessionInfo();
+            }
+            
+            startWorkSession() {
+                this.isWorkSession = true;
+                this.currentTime = this.workTime * 60;
+                this.totalTime = this.workTime * 60;
+                this.updateDisplay();
+            }
+            
+            startBreakSession(duration, type) {
+                this.isWorkSession = false;
+                this.currentTime = duration * 60;
+                this.totalTime = duration * 60;
+                this.updateDisplay();
+            }
+            
+            updateDisplay() {
+                const minutes = Math.floor(this.currentTime / 60);
+                const seconds = this.currentTime % 60;
+                this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const progress = 1 - (this.currentTime / this.totalTime);
+                const circumference = 2 * Math.PI * 90;
+                const strokeDashoffset = circumference - (progress * circumference);
+                this.progressCircle.style.strokeDashoffset = strokeDashoffset;
+            }
+            
+            updateSessionInfo() {
+                if (this.isWorkSession) {
+                    this.sessionType.textContent = '作業セッション';
+                } else {
+                    if (this.sessionCount % 4 === 0) {
+                        this.sessionType.textContent = '長い休憩';
+                    } else {
+                        this.sessionType.textContent = '短い休憩';
+                    }
+                }
+                this.sessionCountEl.textContent = this.sessionCount;
+            }
+            
+            playNotificationSound() {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMeAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMeAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFCpJpOHwjVUsA');
+                audio.play().catch(() => {});
+            }
+        }
+        
+        class BubbleEffect {
+            constructor() {
+                this.container = document.querySelector('.koi-pond');
+                this.createBubbles();
+            }
+            
+            createBubbles() {
+                setInterval(() => {
+                    if (Math.random() > 0.7) {
+                        this.createBubble();
+                    }
+                }, 1000);
+            }
+            
+            createBubble() {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 10 + 5;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                bubble.style.animationDelay = Math.random() * 2 + 's';
+                
+                this.container.appendChild(bubble);
+                
+                setTimeout(() => {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                }, 8000);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new PomodoroTimer();
+            new BubbleEffect();
+        });
+    </script>
+</body>
+</html>
